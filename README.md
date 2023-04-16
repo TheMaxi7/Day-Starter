@@ -1,3 +1,7 @@
+[![status: active](https://github.com/GIScience/badges/raw/master/status/active.svg)](https://github.com/GIScience/badges#active)
+
+![image](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
+
 # Day-Starter
 
 This is a Python-based Telegram bot that sends a morning wrap-up message to the user, including daily weather, news, and market data, as well as any birthdays that are happening on that day. The bot uses the Telegram API, as well as external APIs for weather, news, and market data. The bot is scheduled to run every day at 6 am using the schedule library.
