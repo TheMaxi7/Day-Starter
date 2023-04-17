@@ -45,10 +45,13 @@ async def send_message():
 
 
 # Schedule the job to run every day at 6 am
-schedule.every().day.at("06:00").do(asyncio.run, send_message)
+async def scheduled_job():
+    schedule.every().day.at("06:00").do(asyncio.create_task, send_message())
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(1)
 
-# Main loop to run the scheduled job
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+async def main():
+    await scheduled_job()
 
+asyncio.run(main())
