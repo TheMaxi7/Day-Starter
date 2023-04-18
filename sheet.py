@@ -16,8 +16,10 @@ class Birthdays():
         # Find all cells with the specified date
         matching_cells = self.main_worksheet.findall(date)
         if not matching_cells:
-            return None
-        # Retrieve the names in the first column of each matching cell's row
+            return []
+        # Get names in the first column of each matching cell's row
         names = [self.main_worksheet.cell(cell.row, 1).value for cell in matching_cells]
+        # Filter Nones
+        names = [name for name in names if name is not None]
         return names
 
