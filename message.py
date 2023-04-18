@@ -33,11 +33,14 @@ async def send_message():
 
     birthdays = birthday.get_name(day_month_format)
 
-    if len(birthdays) == 1:
-        content += f"Firstly, don't forget today is {birthdays[0]}'s birthday!! 🎉🎉\n \n"
-    elif len(birthdays) > 1:
-        names = "'s, ".join(birthdays)
-        content += f"Firstly, don't forget today is {names}'s birthdays!!🎉🎉\n \n"
+    if not birthdays:
+        content = ""
+    else:
+        if len(birthdays) == 1:
+            content += f"Firstly, don't forget today is {birthdays[0]}'s birthday!! 🎉🎉\n \n"
+        elif len(birthdays) > 1:
+            names = "'s, ".join(birthdays)
+            content += f"Firstly, don't forget today is {names}'s birthdays!!🎉🎉\n \n"
 
     content += call.get_weather() + call.get_news() + call.get_markets_data()
 
