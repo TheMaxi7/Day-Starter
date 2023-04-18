@@ -26,7 +26,7 @@ Sends a morning wrap-up message to the user on a daily basis, the message includ
 1. Clone the repository to your local machine.
 
 ```bash
-git clone https://github.com/your_username/morning-wrap-up-telegram-bot.git
+git clone https://github.com/your_username/Day-Starter.git
 ```
 
 2. Install the required packages.
