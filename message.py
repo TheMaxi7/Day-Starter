@@ -1,10 +1,9 @@
 # Importing necessary modules
 import asyncio
 import os
-import time
-from datetime import date
+import pytz
+from datetime import datetime, time, timedelta
 
-import requests
 import schedule
 import telegram
 from dotenv import load_dotenv
@@ -23,14 +22,14 @@ bot = telegram.Bot(token=TOKEN)
 birthday = Birthdays()
 call = Calls()
 
-today = date.today()
-day_month_format = str(today.strftime("%d/%m"))
 user_name = "your name here"
 
 # Function to send the message to the user
 async def send_message():
     content = f"😊 Good Morning {user_name}!! 😊\nHere there is your morning wrap up:\n \n"
 
+    today = datetime.now(pytz.timezone('Europe/Rome')).date()
+    day_month_format = today.strftime("%d/%m")
     birthdays = birthday.get_name(day_month_format)
 
     if not birthdays:
@@ -49,12 +48,27 @@ async def send_message():
 
 # Schedule the job to run every day at 6 am
 async def scheduled_job():
-    schedule.every().day.at("06:00").do(asyncio.create_task, send_message())
+    italy_tz = pytz.timezone('Europe/Rome')
+    local_time = datetime.now(italy_tz).time()
+    scheduled_time = time(hour=6, minute=0, second=0, microsecond=0)
+
+    # If the current local time is past 6 am, schedule the job for tomorrow
+    if local_time > scheduled_time:
+        tomorrow = datetime.now(italy_tz) + timedelta(days=1)
+        scheduled_time = time(hour=6, minute=0, second=0, microsecond=0)
+        scheduled_time = italy_tz.localize(datetime.combine(tomorrow.date(), scheduled_time)).time()
+
+    # Schedule the job
+    schedule.every().day.at(scheduled_time.strftime('%H:%M')).do(asyncio.create_task, send_message())
+
     while True:
         schedule.run_pending()
         await asyncio.sleep(1)
 
 async def main():
-    await scheduled_job()
+    while True:
+        await scheduled_job()
+        await asyncio.sleep(60)
 
 asyncio.run(main())
+
