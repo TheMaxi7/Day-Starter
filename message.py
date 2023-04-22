@@ -48,22 +48,15 @@ async def send_message():
 
 # Schedule the job to run every day at 6 am
 async def scheduled_job():
-    italy_tz = pytz.timezone('Europe/Rome')
-    local_time = datetime.now(italy_tz).time()
-    scheduled_time = time(hour=6, minute=0, second=0, microsecond=0)
-
-    # If the current local time is past 6 am, schedule the job for tomorrow
-    if local_time > scheduled_time:
-        tomorrow = datetime.now(italy_tz) + timedelta(days=1)
-        scheduled_time = time(hour=6, minute=0, second=0, microsecond=0)
-        scheduled_time = italy_tz.localize(datetime.combine(tomorrow.date(), scheduled_time)).time()
-
-    # Schedule the job
-    schedule.every().day.at(scheduled_time.strftime('%H:%M')).do(asyncio.create_task, send_message())
-
     while True:
-        schedule.run_pending()
-        await asyncio.sleep(1)
+        now = datetime.now(pytz.timezone('Europe/Rome'))
+        scheduled_time = pytz.timezone('Europe/Rome').localize(
+            datetime.combine(now.date(), time(hour=6, minute=0, second=0)))
+        if now >= scheduled_time:
+            scheduled_time += timedelta(days=1)
+        time_to_wait = (scheduled_time - now).total_seconds()
+        await asyncio.sleep(time_to_wait)
+        await send_message()
 
 async def main():
     while True:
